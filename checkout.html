@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Redirecionando para o checkout…</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232C211B'/%3E%3C/svg%3E">
+<style>
+  :root{--cream:#FAF6F0;--caramel:#B08458;--coffee:#2C211B}
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--cream);color:var(--coffee);
+    font-family:'Jost',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;padding:24px}
+  .spin{width:46px;height:46px;border-radius:50%;border:4px solid #E8DAC8;border-top-color:var(--caramel);animation:r .8s linear infinite}
+  @keyframes r{to{transform:rotate(360deg)}}
+  p{font-size:17px;margin:0;opacity:.85}
+  a{color:var(--caramel);font-weight:600}
+</style>
+</head>
+<body>
+  <div class="spin"></div>
+  <p>Te levando pro pagamento seguro…<br><a id="manual" href="https://pay.kiwify.com.br/SZtyR53">Clique aqui se não for redirecionada</a></p>
+
+  <!-- Vercel Web Analytics: registra este pageview (/checkout = clique de compra) -->
+  <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+  <script src="/_vercel/insights/script.js"></script>
+
+  <!-- Meta Pixel Code -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '1266472325351092');
+  fbq('track', 'PageView');
+  fbq('track', 'InitiateCheckout', {content_name: 'Sua Primeira Publi Paga', currency: 'BRL', value: 27.00});
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=1266472325351092&ev=InitiateCheckout&noscript=1"/></noscript>
+  <!-- End Meta Pixel Code -->
+
+  <script>
+    var DESTINO = "https://pay.kiwify.com.br/SZtyR53";
+    // preserva parâmetros de origem (ex.: ?origem=barra_fixa) só pra log; vai pro Kiwify limpo
+    document.getElementById('manual').href = DESTINO;
+    function irPraCheckout(){ window.location.replace(DESTINO); }
+    // dá um instante pro beacon de pageview disparar (sendBeacon sobrevive à navegação)
+    if (document.readyState === 'complete') { setTimeout(irPraCheckout, 700); }
+    else { window.addEventListener('load', function(){ setTimeout(irPraCheckout, 700); }); }
+    // fallback duro caso algo trave
+    setTimeout(irPraCheckout, 1500);
+  </script>
+  <noscript><meta http-equiv="refresh" content="0;url=https://pay.kiwify.com.br/SZtyR53"></noscript>
+</body>
+</html>

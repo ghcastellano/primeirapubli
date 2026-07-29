@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Painel · Sua Primeira Publi Paga</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232C211B'/%3E%3Ctext x='50' y='58' font-size='42' font-family='Georgia,serif' font-weight='700' fill='%23fff' text-anchor='middle'%3EUGC%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --cream:#FAF6F0; --sand:#E8DAC8; --sand-soft:#F0E7DA; --sand-line:#DCC9B2;
+  --caramel:#B08458; --caramel-dark:#8A6440; --coffee:#2C211B; --coffee-soft:#5C4D42;
+  --green:#2F8F7A; --green-soft:#E3F0EC; --red:#C0563E; --red-soft:#F6E5DF;
+  --shadow:0 4px 20px rgba(61,46,38,0.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cream);color:var(--coffee);font-family:'Jost',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:26px 20px 70px}
+h1,h2,h3{font-family:'Fraunces',serif;font-weight:600;line-height:1.15}
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-bottom:8px}
+.brand{display:flex;align-items:center;gap:13px}
+.brand .ico{width:46px;height:46px;border-radius:13px;flex-shrink:0}
+.brand h1{font-size:25px}
+.brand .sub{font-size:13.5px;color:var(--caramel-dark);font-weight:500;letter-spacing:.02em}
+.period{display:flex;gap:6px;background:#fff;border:1px solid var(--sand-line);border-radius:100px;padding:4px}
+.period button{font-family:'Jost';font-size:13.5px;font-weight:600;color:var(--coffee-soft);background:none;border:none;padding:8px 15px;border-radius:100px;cursor:pointer;transition:.15s}
+.period button.on{background:var(--coffee);color:#fff}
+.updated{font-size:12.5px;color:var(--coffee-soft);margin:2px 0 24px;display:flex;align-items:center;gap:6px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;box-shadow:0 0 0 3px var(--green-soft)}
+.dot.demo{background:var(--caramel)}
+.summary{background:linear-gradient(135deg,var(--coffee),#3d2e26);color:var(--sand);border-radius:20px;padding:24px 26px;margin-bottom:24px;box-shadow:var(--shadow)}
+.summary h2{color:#fff;font-size:19px;margin-bottom:8px;font-style:italic;font-weight:500}
+.summary p{font-size:15.5px;opacity:.93}
+.summary b{color:#fff;font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.kpi{background:#fff;border:1px solid var(--sand-line);border-radius:18px;padding:20px;box-shadow:var(--shadow)}
+.kpi .lab{font-size:12.5px;font-weight:600;color:var(--caramel-dark);text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:7px}
+.kpi .val{font-family:'Fraunces',serif;font-weight:700;font-size:35px;margin:8px 0 4px;line-height:1}
+.kpi .meta{font-size:13px;color:var(--coffee-soft)}
+.grid{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;margin-bottom:18px}
+.card{background:#fff;border:1px solid var(--sand-line);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
+.card h3{font-size:17px;margin-bottom:4px}
+.card .hint{font-size:13px;color:var(--coffee-soft);margin-bottom:16px}
+.chart-box{position:relative;height:230px}
+.funnel{display:flex;flex-direction:column;gap:16px;margin-top:6px}
+.fstep .flabel{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:6px;font-size:14px;font-weight:600;color:var(--coffee)}
+.fstep .flabel .fn{font-family:'Fraunces',serif;font-weight:700;font-size:16px}
+.ftrack{height:26px;background:var(--sand-soft);border-radius:8px;overflow:hidden}
+.ftrack .fbar{height:100%;border-radius:8px;min-width:6px;transition:width .4s ease}
+.fstep .fmeta{font-size:12.5px;color:var(--coffee-soft);margin-top:5px;text-align:right}
+.fstep .fmeta b{color:var(--caramel-dark)}
+.bars{display:flex;flex-direction:column;gap:13px;margin-top:4px}
+.brow{display:flex;align-items:center;gap:12px;font-size:14px}
+.brow .nm{width:92px;flex-shrink:0;font-weight:500}
+.brow .track{flex:1;height:12px;background:var(--sand-soft);border-radius:100px;overflow:hidden}
+.brow .fill{height:100%;border-radius:100px}
+.brow .vv{width:84px;text-align:right;flex-shrink:0;font-weight:600;font-size:13.5px}
+.obj{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--sand-line);font-size:14px}
+.obj:last-child{border:none}
+.obj .ct{background:var(--sand);color:var(--caramel-dark);font-weight:700;font-size:12.5px;padding:3px 10px;border-radius:100px;flex-shrink:0}
+.sale{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--sand-line)}
+.sale:last-child{border:none}
+.sale .av{width:36px;height:36px;border-radius:50%;background:var(--green-soft);color:var(--green);display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:14px}
+.sale .nm{flex:1;font-size:14px;font-weight:500}
+.sale .nm small{display:block;color:var(--coffee-soft);font-weight:400;font-size:12.5px}
+.sale .vl{font-weight:700;color:var(--green);font-size:14.5px}
+.tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:100px;background:var(--green-soft);color:var(--green)}
+.tag.card{background:#EAE2F5;color:#6B4FA0}
+.tag.boleto{background:var(--sand);color:var(--caramel-dark)}
+.empty{color:var(--coffee-soft);font-size:13.5px;padding:14px 0;text-align:center;opacity:.8}
+.foot{text-align:center;font-size:12.5px;color:var(--coffee-soft);opacity:.7;margin-top:28px}
+@media(max-width:880px){ .kpis{grid-template-columns:repeat(2,1fr)} .grid{grid-template-columns:1fr} }
+@media(max-width:480px){ .brand h1{font-size:21px} .kpi .val{font-size:29px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <img class="ico" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232C211B'/%3E%3Ctext x='50' y='58' font-size='42' font-family='Georgia,serif' font-weight='700' fill='%23fff' text-anchor='middle'%3EUGC%3C/text%3E%3C/svg%3E" alt="">
+      <div>
+        <h1>Painel de Resultados</h1>
+        <div class="sub">Sua Primeira Publi Paga · Sophia Martinez</div>
+      </div>
+    </div>
+    <div class="period">
+      <button data-p="hoje">Hoje</button>
+      <button data-p="7d" class="on">7 dias</button>
+      <button data-p="30d">30 dias</button>
+      <button data-p="tudo">Tudo</button>
+    </div>
+  </div>
+  <div class="updated"><span class="dot" id="statusDot"></span> <span id="statusTxt">Carregando…</span></div>
+
+  <div class="summary">
+    <h2>Sua semana, em uma frase 💛</h2>
+    <p id="sumText">Carregando seus resultados…</p>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="lab">💰 Faturamento</div><div class="val" id="kFat">—</div><div class="meta" id="kFatM">vendas aprovadas</div></div>
+    <div class="kpi"><div class="lab">🛍️ Vendas</div><div class="val" id="kVen">—</div><div class="meta" id="kVenM">ticket médio —</div></div>
+    <div class="kpi"><div class="lab">👀 Visitas</div><div class="val" id="kVis">—</div><div class="meta" id="kVisM">pessoas na página</div></div>
+    <div class="kpi"><div class="lab">🎯 Conversão</div><div class="val" id="kConv">—</div><div class="meta">de visita até compra</div></div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>📈 Vendas por dia</h3>
+      <div class="hint">Quando suas vendas acontecem.</div>
+      <div class="chart-box"><canvas id="chSales"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>🪜 Seu funil</h3>
+      <div class="hint">De cada visita até a compra — onde seguem ou desistem.</div>
+      <div class="funnel" id="funnel"></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>💳 Como pagaram</h3>
+      <div class="hint">Formas de pagamento das vendas.</div>
+      <div class="bars" id="pay"></div>
+    </div>
+    <div class="card">
+      <h3>🌐 De onde vêm as visitas</h3>
+      <div class="hint">Por onde as pessoas chegaram.</div>
+      <div class="bars" id="src"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:18px">
+    <h3>🌎 Países dos visitantes</h3>
+    <div class="hint">De onde no mundo as pessoas acessam sua página.</div>
+    <div class="bars" id="paises"></div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>❓ Maiores dúvidas (FAQ)</h3>
+      <div class="hint">As perguntas mais abertas = objeções a resolver.</div>
+      <div id="obj"></div>
+    </div>
+    <div class="card">
+      <h3>🧾 Últimas vendas</h3>
+      <div class="hint">Suas compras mais recentes.</div>
+      <div id="sales"></div>
+    </div>
+  </div>
+
+  <div class="foot">Painel feito com 💛 para a Sophia · atualiza sozinho a cada nova visita e venda</div>
+</div>
+
+<script>
+var ENDPOINT = "https://script.google.com/macros/s/AKfycbyPuxohCJr0Cwvs-QOR8cJArLO19tYKTBPnHGigvvsqUZFhRloZaQYSFQ2RbeqFEyuTeQ/exec";
+
+var DEMO = { _demo:true,
+  vendas:[
+    {data:diasAtras(0), status:'paid', nome:'Marina Souza', metodo:'pix', valor:27},
+    {data:diasAtras(0), status:'paid', nome:'Beatriz Lima', metodo:'credit_card', valor:27},
+    {data:diasAtras(1), status:'paid', nome:'Camila Rocha', metodo:'pix', valor:27},
+    {data:diasAtras(1), status:'paid', nome:'Júlia Martins', metodo:'pix', valor:27},
+    {data:diasAtras(2), status:'paid', nome:'Ana Prado', metodo:'pix', valor:27},
+    {data:diasAtras(4), status:'paid', nome:'Letícia Dias', metodo:'pix', valor:27},
+    {data:diasAtras(4), status:'paid', nome:'Sofia Nunes', metodo:'credit_card', valor:27},
+    {data:diasAtras(5), status:'paid', nome:'Helena Castro', metodo:'pix', valor:27},
+    {data:diasAtras(6), status:'paid', nome:'Clara Mendes', metodo:'pix', valor:27}
+  ],
+  trafego: demoTrafego()
+};
+function diasAtras(n){ var d=new Date(); d.setDate(d.getDate()-n); return d.toISOString(); }
+function demoTrafego(){
+  var ev=[], fontes=['instagram','instagram','instagram','direto','google'];
+  for(var d=0; d<7; d++){
+    var vis = [40,28,52,33,60,55,44][d];
+    for(var i=0;i<vis;i++){
+      ev.push({data:diasAtras(d),evento:'visita',rotulo:'/',origem:fontes[i%5],visitante:'v'+d+'_'+i,pais:['BR:Brasil','BR:Brasil','BR:Brasil','BR:Brasil','US:Estados Unidos','PT:Portugal','BR:Brasil'][i%7]});
+      if(i<vis*0.47) ev.push({data:diasAtras(d),evento:'chegou_oferta',rotulo:'',origem:'',visitante:'v'+d+'_'+i});
+      if(i<vis*0.10) ev.push({data:diasAtras(d),evento:'clique_checkout',rotulo:i%3?'oferta':'barra_fixa',origem:'',visitante:'v'+d+'_'+i});
+    }
+  }
+  [['Funciona com menos de 5 mil seguidores?',22],['Não tenho nenhuma publi ainda. Serve?',15],['Em quanto tempo fecho minha 1ª publi?',11],['E se eu não gostar?',6]].forEach(function(o){
+    for(var i=0;i<o[1];i++) ev.push({data:diasAtras(i%7),evento:'faq',rotulo:o[0],origem:'',visitante:'vf'+i});
+  });
+  return ev;
+}
+
+// ---------- helpers ----------
+var real = function(n){ return Math.round(n).toLocaleString('pt-BR'); };
+var brl  = function(n){ return 'R$ ' + Math.round(n).toLocaleString('pt-BR'); };
+var pct  = function(n){ return (Math.round(n*10)/10).toLocaleString('pt-BR') + '%'; };
+function diasDoPeriodo(p){ return p==='hoje'?1 : p==='7d'?7 : p==='30d'?30 : 3650; }
+function dentroPeriodo(dataStr, p){
+  if(p==='tudo') return true;
+  var d=new Date(dataStr), agora=new Date();
+  if(p==='hoje') return d.toDateString()===agora.toDateString();
+  var lim=new Date(); lim.setDate(lim.getDate()-diasDoPeriodo(p));
+  return d>=lim;
+}
+var APROV=/paid|approv|aprovad|pago/i, REEMB=/refund|reembols|estorn|charg/i;
+function ehVenda(s){ return APROV.test(String(s)); }
+function ehReembolso(s){ return REEMB.test(String(s)); }
+function flag(cc){ try{ return (cc||'').toUpperCase().replace(/[A-Z]/g,function(c){return String.fromCodePoint(127397+c.charCodeAt(0));})||'🌍'; }catch(e){ return '🌍'; } }
+// filtra dados de teste (meus testes via terminal e compras-teste do próprio dono)
+function ehTesteTraf(t){ var o=String(t.origem||'').toLowerCase(), v=String(t.visitante||'').toLowerCase(); return /teste/.test(o) || /test|vpais/.test(v) || String(t.rotulo||'')==='/teste'; }
+function ehTesteVenda(v){ return /gusta|castellano/i.test(String(v.email||'')); }
+// nomes amigáveis das fontes de tráfego
+function fonteNome(o){ o=String(o||'').toLowerCase();
+  if(/instagram|^ig$|igsh/.test(o)) return 'Instagram';
+  if(/facebook|fbclid|^fb/.test(o)) return 'Facebook';
+  if(/linktr/.test(o)) return 'Linktree';
+  if(/t\.co|twitter|x\.com/.test(o)) return 'Twitter/X';
+  if(/tiktok/.test(o)) return 'TikTok';
+  if(/youtu/.test(o)) return 'YouTube';
+  if(/whats|wa\.me/.test(o)) return 'WhatsApp';
+  if(/google/.test(o)) return 'Google';
+  if(o==='direto'||o===''||/vercel/.test(o)) return 'Direto / Link na bio';
+  var d=o.replace(/^www\./,'').split('.')[0]; return d.charAt(0).toUpperCase()+d.slice(1); }
+function metodoInfo(m){
+  m=String(m).toLowerCase();
+  if(/pix/.test(m)) return {nm:'Pix', cls:'', cor:'#2F8F7A'};
+  if(/card|cart|credit/.test(m)) return {nm:'Cartão', cls:'card', cor:'#6B4FA0'};
+  if(/bole/.test(m)) return {nm:'Boleto', cls:'boleto', cor:'#B08458'};
+  return {nm:'Outro', cls:'', cor:'#8A6440'};
+}
+function nomeMasc(nome){
+  if(!nome) return 'Cliente';
+  var p=String(nome).trim().split(/\s+/);
+  return p.length>1 ? p[0]+' '+p[p.length-1][0]+'.' : p[0];
+}
+function quando(dataStr){
+  var d=new Date(dataStr), diff=(Date.now()-d.getTime())/1000;
+  if(diff<3600) return 'há '+Math.max(1,Math.round(diff/60))+' min';
+  if(diff<86400) return 'há '+Math.round(diff/3600)+'h';
+  if(diff<172800) return 'ontem';
+  return 'há '+Math.round(diff/86400)+' dias';
+}
+
+// ---------- carregar dados (JSONP, sem CORS) ----------
+function carregar(cb){
+  var s=document.createElement('script'), done=false;
+  window.__ppcb=function(d){ done=true; cb(d); try{delete window.__ppcb;}catch(e){} s.remove(); };
+  s.onerror=function(){ if(!done) cb(null); };
+  s.src=ENDPOINT+'?callback=__ppcb&t='+Date.now();
+  document.head.appendChild(s);
+  setTimeout(function(){ if(!done) cb(null); }, 9000);
+}
+
+var chart=null, RAW=null, PERIODO='7d';
+
+function render(){
+  // só vira "ao vivo" quando houver volume real (evita ficar vazio com pouquíssimos dados)
+  // SEMPRE dados reais. Nunca cai pro exemplo (evita mostrar número falso/desatualizado).
+  var fonte = RAW || {vendas:[],trafego:[]};
+  var aoVivo = true;
+  var trafAll = (fonte.trafego||[]).filter(function(t){ return dentroPeriodo(t.data, PERIODO) && !ehTesteTraf(t); });
+
+  // Kiwify manda vários webhooks por pedido (pix_created, order_approved, repetidos).
+  // Agrupamos por order_id e ficamos com 1 pedido só, no status final.
+  var byOrder={};
+  (fonte.vendas||[]).forEach(function(v){
+    var id=String(v.id||(''+v.nome+'|'+v.valor+'|'+v.data));
+    var o=byOrder[id]||(byOrder[id]={id:id,nome:v.nome,valor:Number(v.valor)||0,metodo:v.metodo,data:v.data,status:'pending'});
+    if(ehReembolso(v.status)){ o.status='refunded'; o.data=v.data; }
+    else if(ehVenda(v.status) && o.status!=='refunded'){ o.status='paid'; o.data=v.data; o.metodo=v.metodo; o.valor=Number(v.valor)||o.valor; }
+  });
+  var pedidos=Object.keys(byOrder).map(function(k){return byOrder[k];});
+  var vendas=pedidos.filter(function(o){ return o.status==='paid' && dentroPeriodo(o.data,PERIODO); });
+  var reemb =pedidos.filter(function(o){ return o.status==='refunded' && dentroPeriodo(o.data,PERIODO); });
+  var fat = vendas.reduce(function(a,v){ return a+(Number(v.valor)||0); },0);
+  var nVen = vendas.length;
+  var ticket = nVen? fat/nVen : 0;
+  // taxa Kiwify: 8,99% + R$2,49 por venda
+  var TAXA_PCT=0.0899, TAXA_FIX=2.49;
+  var liquido = vendas.reduce(function(a,v){ var g=Number(v.valor)||0; return a+Math.max(0, g-(g*TAXA_PCT+TAXA_FIX)); },0);
+
+  function cont(ev){ return trafAll.filter(function(t){ return t.evento===ev; }).length; }
+  var visitas = cont('visita');
+  var chegou  = cont('chegou_oferta');
+  var cliques = cont('clique_checkout');
+  var conv = visitas? (nVen/visitas*100) : 0;
+
+  // status
+  var dot=document.getElementById('statusDot'), st=document.getElementById('statusTxt');
+  var hora=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  if(aoVivo){ dot.className='dot'; st.innerHTML='Ao vivo · atualizado às '+hora+' · <span style="cursor:pointer;text-decoration:underline">atualizar agora</span>'; }
+  else{ dot.className='dot demo'; st.innerHTML='Dados de exemplo · aparece de verdade quando começarem as visitas e vendas'; }
+  st.querySelector('span') && (st.querySelector('span').onclick=atualizar);
+
+  // KPIs
+  document.getElementById('kFat').textContent = brl(fat);
+  document.getElementById('kFatM').textContent = nVen? ('Líquido '+brl(liquido)+' · após taxas Kiwify') : 'vendas aprovadas';
+  document.getElementById('kVen').textContent = real(nVen);
+  document.getElementById('kVenM').textContent = nVen? ('ticket médio '+brl(ticket)) : 'nenhuma ainda';
+  document.getElementById('kVis').textContent = real(visitas);
+  document.getElementById('kConv').textContent = visitas? pct(conv) : '—';
+
+  // resumo humano
+  var sum;
+  if(!aoVivo){ sum='Assim que sua página começar a receber visitas e vendas, este resumo vira o retrato real da sua semana. Por enquanto, é só um exemplo do que você vai ver aqui. 💛'; }
+  else if(visitas===0 && nVen===0){ sum='Ainda não chegaram dados nesse período. Compartilhe sua página e volte aqui — os números aparecem sozinhos. 💛'; }
+  else{
+    sum='Neste período, <b>'+real(visitas)+' pessoas</b> visitaram sua página e <b>'+real(nVen)+(nVen===1?' comprou':' compraram')+'</b>';
+    if(visitas) sum+=' — conversão de <b>'+pct(conv)+'</b>';
+    sum+='. Você faturou <b>'+brl(fat)+'</b>.';
+    if(cliques && nVen) sum+=' De quem clicou em comprar, '+pct(nVen/cliques*100)+' fecharam.';
+    if(reemb.length) sum+=' ('+reemb.length+' reembolso'+(reemb.length>1?'s':'')+' no período.)';
+  }
+  document.getElementById('sumText').innerHTML = sum;
+
+  // funil
+  var passos=[
+    {nome:'Visitaram a página', n:visitas, cor:'#8A6440'},
+    {nome:'Chegaram no preço', n:chegou, cor:'#B08458'},
+    {nome:'Clicaram em comprar', n:cliques, cor:'#3FA08C'},
+    {nome:'Compraram', n:nVen, cor:'#2F8F7A'}
+  ];
+  var fmax=Math.max(passos[0].n,1);
+  document.getElementById('funnel').innerHTML = passos.map(function(s,i){
+    var w=Math.max(3, Math.round(s.n/fmax*100));
+    var taxa=i>0 && passos[i-1].n ? Math.min(100, Math.round(s.n/passos[i-1].n*100)) : null;
+    return '<div class="fstep">'+
+      '<div class="flabel"><span>'+s.nome+'</span><span class="fn">'+real(s.n)+'</span></div>'+
+      '<div class="ftrack"><div class="fbar" style="width:'+w+'%;background:'+s.cor+'"></div></div>'+
+      (taxa!==null?'<div class="fmeta"><b>'+taxa+'%</b> seguiram daqui</div>':'')+'</div>';
+  }).join('');
+
+  // pagamento
+  var pg={}; vendas.forEach(function(v){ var k=metodoInfo(v.metodo); pg[k.nm]=pg[k.nm]||{nm:k.nm,v:0,cor:k.cor}; pg[k.nm].v++; });
+  var pgArr=Object.keys(pg).map(function(k){return pg[k];}).sort(function(a,b){return b.v-a.v;});
+  var pgTot=pgArr.reduce(function(a,b){return a+b.v;},0)||1;
+  document.getElementById('pay').innerHTML = pgArr.length? pgArr.map(function(p){
+    var x=Math.round(p.v/pgTot*100);
+    return '<div class="brow"><span class="nm">'+p.nm+'</span><span class="track"><span class="fill" style="width:'+x+'%;background:'+p.cor+'"></span></span><span class="vv">'+p.v+' ('+x+'%)</span></div>';
+  }).join('') : '<div class="empty">Sem vendas neste período ainda.</div>';
+
+  // fontes
+  var fz={}; trafAll.filter(function(t){return t.evento==='visita';}).forEach(function(t){
+    var o=fonteNome(t.origem); fz[o]=(fz[o]||0)+1; });
+  var fzArr=Object.keys(fz).map(function(k){return {nm:k,v:fz[k]};}).sort(function(a,b){return b.v-a.v;}).slice(0,5);
+  var fzTot=fzArr.reduce(function(a,b){return a+b.v;},0)||1;
+  var fcores=['#B08458','#8A6440','#C9B59A','#3FA08C','#5C4D42'];
+  document.getElementById('src').innerHTML = fzArr.length? fzArr.map(function(p,i){
+    var x=Math.round(p.v/fzTot*100);
+    return '<div class="brow"><span class="nm">'+p.nm+'</span><span class="track"><span class="fill" style="width:'+x+'%;background:'+fcores[i%5]+'"></span></span><span class="vv">'+x+'%</span></div>';
+  }).join('') : '<div class="empty">Sem visitas neste período ainda.</div>';
+
+  // países
+  var pz={}; trafAll.filter(function(t){return t.evento==='visita' && t.pais;}).forEach(function(t){ pz[t.pais]=(pz[t.pais]||0)+1; });
+  var pzArr=Object.keys(pz).map(function(k){var p=String(k).split(':');return {cc:p[0],nm:p[1]||p[0],v:pz[k]};}).sort(function(a,b){return b.v-a.v;}).slice(0,8);
+  var pzTot=pzArr.reduce(function(a,b){return a+b.v;},0)||1;
+  document.getElementById('paises').innerHTML = pzArr.length? pzArr.map(function(p,i){
+    var x=Math.round(p.v/pzTot*100);
+    return '<div class="brow"><span class="nm" style="width:auto;min-width:160px">'+flag(p.cc)+'&nbsp; '+p.nm+'</span><span class="track"><span class="fill" style="width:'+x+'%;background:'+fcores[i%5]+'"></span></span><span class="vv">'+p.v+' ('+x+'%)</span></div>';
+  }).join('') : '<div class="empty">Coletando países dos visitantes — aparece nas próximas visitas. 🌎</div>';
+
+  // objeções
+  var fq={}; trafAll.filter(function(t){return t.evento==='faq';}).forEach(function(t){ var q=t.rotulo||'(pergunta)'; fq[q]=(fq[q]||0)+1; });
+  var fqArr=Object.keys(fq).map(function(k){return {q:k,n:fq[k]};}).sort(function(a,b){return b.n-a.n;}).slice(0,5);
+  document.getElementById('obj').innerHTML = fqArr.length? fqArr.map(function(o){
+    return '<div class="obj"><span>'+o.q+'</span><span class="ct">'+o.n+'×</span></div>';
+  }).join('') : '<div class="empty">Ninguém abriu o FAQ neste período.</div>';
+
+  // últimas vendas
+  var recs=vendas.slice().sort(function(a,b){return new Date(b.data)-new Date(a.data);}).slice(0,6);
+  document.getElementById('sales').innerHTML = recs.length? recs.map(function(s){
+    var mi=metodoInfo(s.metodo);
+    return '<div class="sale"><span class="av">✓</span><span class="nm">Venda aprovada<small>'+quando(s.data)+'</small></span><span class="tag '+mi.cls+'">'+mi.nm+'</span><span class="vl">'+brl(Number(s.valor)||0)+'</span></div>';
+  }).join('') : '<div class="empty">Nenhuma venda neste período ainda.</div>';
+
+  // gráfico vendas por dia
+  var dias=diasDoPeriodo(PERIODO); if(dias>30) dias=30;
+  var labels=[], data=[];
+  var semana=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  for(var k=dias-1;k>=0;k--){
+    var d=new Date(); d.setDate(d.getDate()-k); d.setHours(0,0,0,0);
+    var d2=new Date(d); d2.setDate(d2.getDate()+1);
+    labels.push(dias<=7 ? semana[d.getDay()] : (d.getDate()+'/'+(d.getMonth()+1)));
+    data.push(vendas.filter(function(v){ var t=new Date(v.data); return t>=d && t<d2; }).length);
+  }
+  if(chart) chart.destroy();
+  chart=new Chart(document.getElementById('chSales'),{
+    type:'bar',
+    data:{labels:labels,datasets:[{data:data,backgroundColor:'#2F8F7A',borderRadius:7,maxBarThickness:34}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1,precision:0,color:'#5C4D42'},grid:{color:'#EFE6D9'}},x:{ticks:{color:'#5C4D42'},grid:{display:false}}},maintainAspectRatio:false}
+  });
+}
+
+document.querySelectorAll('.period button').forEach(function(b){
+  b.onclick=function(){
+    document.querySelectorAll('.period button').forEach(function(x){x.classList.remove('on');});
+    b.classList.add('on'); PERIODO=b.getAttribute('data-p'); render();
+  };
+});
+
+function atualizar(){ carregar(function(d){ if(d){ RAW=d; render(); } }); }
+// Primeira carga: só renderiza com dados reais. Se falhar, avisa claramente e tenta de novo (nunca usa exemplo).
+function mostrarErro(){
+  document.getElementById('statusDot').className='dot demo';
+  document.getElementById('statusTxt').textContent='Sem conexão com os dados — tentando de novo…';
+  document.getElementById('sumText').innerHTML='⚠️ <b>Não consegui carregar seus dados agora.</b> Isso costuma ser temporário — o painel tenta sozinho a cada poucos segundos. Seus números estão salvos e vão reaparecer.';
+}
+carregar(function(d){
+  if(d){ RAW=d; render(); }
+  else{ mostrarErro(); setTimeout(function tentar(){ carregar(function(d2){ if(d2){ RAW=d2; render(); } else { setTimeout(tentar, 5000); } }); }, 4000); }
+});
+setInterval(atualizar, 20000); // auto-atualiza a cada 20s
+document.addEventListener('visibilitychange', function(){ if(!document.hidden) atualizar(); }); // ao voltar pra aba
+window.addEventListener('focus', atualizar); // ao focar a janela
+</script>
+</body>
+</html>
